@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head><title>YouTube Auto Uploader</title></head>
+<body>
+  <h2>Upload Audio + Image to YouTube</h2>
+  <form id="uploadForm" enctype="multipart/form-data">
+    <label>Audio URL: <input type="text" name="audioUrl" required></label><br>
+    <label>Title: <input type="text" name="title" required></label><br>
+    <label>Description: <textarea name="description"></textarea></label><br>
+    <label>Image: <input type="file" name="image" accept="image/*" required></label><br><br>
+    <button type="submit">Generate & Upload</button>
+  </form>
+  <div id="result"></div>
+  <script>
+    const form = document.getElementById('uploadForm');
+    const result = document.getElementById('result');
+    form.onsubmit = async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+      result.innerText = 'Uploading...';
+      const res = await fetch('/generate', { method: 'POST', body: formData });
+      const json = await res.json();
+      result.innerHTML = json.success
+        ? `<p>✅ Uploaded! <a href="https://youtube.com/watch?v=${json.videoId}" target="_blank">Watch Video</a></p>`
+        : `<p>❌ Error: ${json.error}</p>`;
+    };
+  </script>
+</body>
+</html>
